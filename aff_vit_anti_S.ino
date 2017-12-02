@@ -87,82 +87,82 @@ void setup() {
 }
 //=============================================//
 void loop() {
-temp();                      // tempos 1 et 2
-vit();                       // acquisition signal vitesse
-bcd();                       // conversion décimal => BCD
-writeN(mil,cent,diz,unit);   // Ecriture du nombre à 4 digits
+  temp();                      // tempos 1 et 2
+  vit();                       // acquisition signal vitesse
+  bcd();                       // conversion décimal => BCD
+  writeN(mil,cent,diz,unit);   // Ecriture du nombre à 4 digits
 }
 
 //=============================================//
 void temp(){
-// sous programme temporisations 1 & 2
+  // sous programme temporisations 1 & 2
 
   // Tempo 1
-  
+
   if ((valTempo1==1) &  (memTempo1==0))                 // lance tempo ?
   { 
-        memTempo1 = 1;                                  // mise à 1 mémoire tempo en cours
-        prev1 = millis();                               // charge nbre millisec en mémoire
+    memTempo1 = 1;                                  // mise à 1 mémoire tempo en cours
+    prev1 = millis();                               // charge nbre millisec en mémoire
   }
-       if ((valTempo1== 1) &  (memTempo1==1))           // tempo en cours
-             {
-                if ((millis() - prev1) > duree1)        // valeur courrante == valeur préselection
-                    { 
-                      finTempo1 = 1;                    // bit fin tempo à 1
-                    }
-                   else 
-                    {
-                      finTempo1 = 0;                    // RAZ bit fin tempo
-                    }
-             }
+  if ((valTempo1== 1) &  (memTempo1==1))           // tempo en cours
+  {
+    if ((millis() - prev1) > duree1)        // valeur courrante == valeur préselection
+    { 
+      finTempo1 = 1;                    // bit fin tempo à 1
+    }
+    else 
+    {
+      finTempo1 = 0;                    // RAZ bit fin tempo
+    }
+  }
 
- if (valTempo1==0) {                                    // tempo non validée
+  if (valTempo1==0) {                                    // tempo non validée
     memTempo1=0;                                        // RAZ tempo en cours
     finTempo1 = 0;                                      // RAZ fin tempo
-   }    
+  }    
 
   Serial.print(" valeurTempo 1: ");
   Serial.println(prev1);                           
 
-    
- 
- // Tempo 2
-  
+
+
+  // Tempo 2
+
   if ((valTempo2==1) &  (memTempo2==0))                 // lance tempo ?
   { 
-        memTempo2 = 1;                                  // mise à 1 mémoire tempo en cours
-        prev2 = millis();                               // charge nbre millisec en mémoire
+    memTempo2 = 1;                                  // mise à 1 mémoire tempo en cours
+    prev2 = millis();                               // charge nbre millisec en mémoire
   }
-       if ((valTempo2== 1) &  (memTempo2==1))           // tempo en cours
-             {
-                if ((millis() - prev2) > duree2)        // valeur courrante == valeur préselection
-                    { 
-                      finTempo2 = 1;                    // bit fin tempo à 1
-                    }
-                   else 
-                    {
-                      finTempo2 = 0;                    // RAZ bit fin tempo
-                    }
-             }
+  if ((valTempo2== 1) &  (memTempo2==1))           // tempo en cours
+  {
+    if ((millis() - prev2) > duree2)        // valeur courrante == valeur préselection
+    { 
+      finTempo2 = 1;                    // bit fin tempo à 1
+    }
+    else 
+    {
+      finTempo2 = 0;                    // RAZ bit fin tempo
+    }
+  }
 
- if (valTempo2==0) {                                    // tempo non validée
+  if (valTempo2==0) {                                    // tempo non validée
     memTempo2=0;                                        // RAZ tempo en cours
-      finTempo2 = 0;                                    // RAZ fin tempo
-   }     
- 
+    finTempo2 = 0;                                    // RAZ fin tempo
+  }     
+
 }
 //==============================================//
 void vit(){
-// acquisition signal vitesse
+  // acquisition signal vitesse
   entreeAna = analogRead(adressePin);                                                                    // lecture entrée ANA
-  
+
   if(valTempo1 == 0)   valTempo1 = 1;                                                                    // lance tempo 1 "anti scintillement"
-  
+
   if(( finTempo1 == 1 && ((entreeAna > (sauveValeur + pitch))||(entreeAna  < (sauveValeur - pitch)))))   // variation de la valeur dans l'intervalle fixé ?
   {
-  sauveValeur = entreeAna;                                                                               // mémorise nouvelle valeur lue
-  vitesse = map(sauveValeur, valeurMin, valeurMax, 0, 1700);                                             // mise à l'échelle 0-10V -> 0-100Hz -> 0-1700 t/mn
-  valTempo1 = 0;                                                                                         // RAZ tempo 1
+    sauveValeur = entreeAna;                                                                               // mémorise nouvelle valeur lue
+    vitesse = map(sauveValeur, valeurMin, valeurMax, 0, 1700);                                             // mise à l'échelle 0-10V -> 0-100Hz -> 0-1700 t/mn
+    valTempo1 = 0;                                                                                         // RAZ tempo 1
   }
 }
 
@@ -171,34 +171,34 @@ void vit(){
 void bcd() {                                              // Commentaires                     ex: nb = 1234                   ex: nb = 903
   nb=vitesse;                                             //                                  
   if (nb < 1000){                                         // nombre < 1000 ?                  non                             oui
-          mil =0;                                         // mil = 0                                                          mil = 0
-          reste = nb;}                                    // charge reste avec nb             reste = 234                     reste = 904
-          else {                                          // donc nombre > 1000     
-                 mil = nb/1000;                           // calcul milliers                  mil = 1               
-                 reste = nb - (mil*1000);                 // calcul reste                     reste = 234               
-               }
+    mil =0;                                         // mil = 0                                                          mil = 0
+    reste = nb;}                                    // charge reste avec nb             reste = 234                     reste = 904
+  else {                                          // donc nombre > 1000     
+    mil = nb/1000;                           // calcul milliers                  mil = 1               
+    reste = nb - (mil*1000);                 // calcul reste                     reste = 234               
+  }
   if (reste < 100){                                       // valeur < 100 ?                   non                             non
-              cent = 0;}                                  // cent = 0
-              else {                                      // donc reste > 100
-                    cent = reste/100;                     // calcul centaines                 cent = 2                        cent = 9
-                    reste = reste - (cent*100);           // calcul reste                     reste = 34                      reste = 03
-                   }
-              if (reste < 10){                            // valeur < 10 ?                    non                             oui
-                  diz = 0;}                               // diz = 0                                                          diz = 0
-                  else {                                  // donc reste > 10
-                         diz = reste/10;                  // calcul dizaines                  diz = 3
-                         reste = reste-(diz*10);          // calcul reste                     reste = 4                       reste = 3                      
-                       }       
- unit = reste;                                            // reste l'unité                    unit = 4                        unit = 3
+    cent = 0;}                                  // cent = 0
+  else {                                      // donc reste > 100
+    cent = reste/100;                     // calcul centaines                 cent = 2                        cent = 9
+    reste = reste - (cent*100);           // calcul reste                     reste = 34                      reste = 03
+  }
+  if (reste < 10){                            // valeur < 10 ?                    non                             oui
+    diz = 0;}                               // diz = 0                                                          diz = 0
+  else {                                  // donc reste > 10
+    diz = reste/10;                  // calcul dizaines                  diz = 3
+    reste = reste-(diz*10);          // calcul reste                     reste = 4                       reste = 3                      
+  }       
+  unit = reste;                                            // reste l'unité                    unit = 4                        unit = 3
 }
 
 //=============================================//
 //Ecriture du nombre à 4 digits - writeN(1,2,3,4)
 void writeN(int a,int b,int c,int d){
-    selectDwriteL(1,a);
-    selectDwriteL(2,b);
-    selectDwriteL(3,c);
-    selectDwriteL(4,d);
+  selectDwriteL(1,a);
+  selectDwriteL(2,b);
+  selectDwriteL(3,c);
+  selectDwriteL(4,d);
 }
 
 //=============================================//
@@ -254,12 +254,12 @@ void selectDwriteL(int d,int l){
     case 9: nine();
             break;
     case 10: point();                       // Point
-            break;
+             break;
     case 11: none();                        // Aucun 
-            break;
+             break;
   }
 
-delayMicroseconds(delayTime);               // Fréquence d'affichage
+  delayMicroseconds(delayTime);               // Fréquence d'affichage
 
 }
 
