@@ -161,7 +161,7 @@ void vit(){
   if(( finTempo1 == 1 && ((entreeAna > (sauveValeur + pitch))||(entreeAna  < (sauveValeur - pitch)))))   // variation de la valeur dans l'intervalle fixé ?
   {
     sauveValeur = entreeAna;                                                                               // mémorise nouvelle valeur lue
-    vitesse = map(sauveValeur, valeurMin, valeurMax, 0, 3000);                                             // mise à l'échelle 0-10V -> 0-100Hz -> 0-1700 t/mn
+    vitesse = map(sauveValeur, valeurMin, valeurMax, 0, 4000);                                             // mise à l'échelle 0-10V -> 0-100Hz -> 0-1700 t/mn
     valTempo1 = 0;                                                                                         // RAZ tempo 1
   }
 }
